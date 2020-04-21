@@ -1,0 +1,7 @@
+siteapikeys.configuration:
+  type: mapping
+  label: 'Setting'
+  mapping:
+    siteapikeys:
+      type: string
+

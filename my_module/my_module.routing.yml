@@ -1,0 +1,6 @@
+my_module.check:
+  path: '/path_json/{api}/{id}'
+  defaults:
+    _controller: 'Drupal\my_module\Controller\MyModuleController::accessCheck'
+  requirements:
+    _permission: 'access content'

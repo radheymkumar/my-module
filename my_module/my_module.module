@@ -1,0 +1,45 @@
+<?php
+
+/**
+ * @file
+ */
+
+use Drupal\Core\Form\FormStateInterface;
+
+/**
+ * implimentation of hook_form_alter()
+ */
+function my_module_form_alter( array &$form, FormStateInterface $form_state, $form_id ) {
+
+  if ($form_id == 'system_site_information_settings') {
+
+    $api_key = \Drupal::config('siteapikey.configuration')->get('siteapikey');
+
+    $form['site_information']['api_key'] = [
+      '#type' => 'textfield',
+      '#title' => t('Site API Key'),
+      '#default_value' => !empty($api_key) ? $api_key : 'No API Key yet',
+      '#description' => t('Enter Site API Key.'),
+    ];
+
+    $form['actions']['submit']['#value'] = t('Update configuration');
+    $form['#submit'][] = 'callback_handler_submit';
+  }
+
+}
+
+/**
+ * Form submission handler for  system_site_information_settings().
+ *
+ * @see my_module_form_alter()
+ */
+function callback_handler_submit(array &$form, FormStateInterface $form_state) {
+
+  \Drupal::configFactory()->getEditable('siteapikey.configuration')
+    ->set('siteapikey', $form_state->getValue('api_key'))
+    ->save();
+
+    \Drupal::messenger()->deleteAll();
+    \Drupal::messenger()->addMessage("Successfully Site API Key has been saved. API KEY: " . $form_state->getValue('api_key'));
+
+}
